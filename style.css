@@ -1,0 +1,316 @@
+/* CSS: 웹페이지 디자인 */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap");
+
+body {
+  font-family: "Noto Sans KR", sans-serif;
+  background-color: #f4f1e9; /* 고서 느낌의 배경색 */
+  color: #3a3a3a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.container {
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+}
+
+h1 {
+  text-align: center;
+  color: #8c2c21; /* 도쿠가와 가문 색상 느낌 */
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 15px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+p {
+  margin-top: 0;
+}
+.player-section {
+  margin-bottom: 25px;
+}
+
+.player-section h2 {
+  display: flex;
+  align-items: center;
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+.ishida-title {
+  color: #555;
+} /* 이시다 가문 색상 느낌 */
+.tokugawa-title {
+  color: #8c2c21;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  flex-basis: 250px;
+  font-size: 1.1em;
+}
+
+input[type="number"] {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* 위쪽 여백 조정 */
+}
+
+button {
+  background-color: #3a3a3a;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1.2em;
+  font-weight: 700;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+.reset-btn {
+  background-color: #a44a3f; /* 초기화에 어울리는 붉은 계열 */
+  font-size: 1em;
+}
+
+.reset-btn:hover {
+  background-color: #8c2c21;
+}
+
+.block-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.add-block-btn {
+  padding: 8px 12px;
+  font-size: 0.9em;
+  background-color: #6c757d;
+  cursor: pointer;
+}
+
+.block-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 40px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+}
+
+.battle-block {
+  width: 60px; /* 너비를 더 늘려 공간 확보 */
+  height: 45px; /* 높이 증가 */
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #adb5bd; /* 미지원 상태 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.battle-block .block-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.battle-block .block-info {
+  font-size: 10px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 4px; /* 아이콘과 텍스트 사이 간격 */
+}
+
+.battle-block .block-info span {
+  /* 텍스트가 줄바꿈되지 않도록 설정 */
+  white-space: nowrap;
+}
+
+.battle-block .block-strength {
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.result-section {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.result-section h3 {
+  margin-top: 0;
+  font-size: 1.4em;
+}
+
+#resultText {
+  font-size: 1.8em;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+#winnerText {
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.ishida-win {
+  background-color: #e0e0e0;
+  color: #333;
+}
+.tokugawa-win {
+  background-color: #8c2c21;
+  color: white;
+}
+
+/* 각 진영별 지원받는 블록 색상 */
+.ishida-block.supported {
+  background-color: #555;
+  border-color: #333;
+}
+
+.tokugawa-block.supported {
+  background-color: #8c2c21;
+  border-color: #6a2018;
+}
+
+/* 총/검 특수효과 발동 시 스타일 */
+.battle-block.effect-active {
+  border: 3px solid #ffc107; /* 노란색 테두리로 강조 */
+  box-shadow: 0 0 8px rgba(255, 193, 7, 0.8);
+}
+
+/* 모달 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none; /* 기본적으로 숨김 */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.crest-selection {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.crest-btn {
+  padding: 10px 15px;
+  border: 2px solid #ccc;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  color: #333;
+  border-radius: 5px;
+}
+
+.crest-btn.active {
+  border-color: #333;
+  background-color: #ddd;
+  font-weight: bold;
+}
+.crest-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px; /* 아이콘과 이름 사이 간격 */
+}
+
+.crest-btn .crest-icon {
+  width: 20px;
+  height: 20px;
+  /* 아이콘이 버튼의 세로 중앙에 오도록 정렬 */
+  vertical-align: middle;
+}
+
+.crest-name {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.block-type-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 10px;
+}
+
+.block-type-btn {
+  padding: 12px 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  color: #333;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+}

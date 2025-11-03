@@ -23,6 +23,13 @@ body {
   max-width: 600px;
 }
 
+.description {
+  text-align: center;
+  margin-top: -20px;
+  margin-bottom: 20px;
+  color: #666;
+}
+
 h1 {
   text-align: center;
   color: #8c2c21; /* 도쿠가와 가문 색상 느낌 */
@@ -252,6 +259,21 @@ button:hover {
   width: 90%;
   max-width: 500px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-footer {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.modal-close-btn {
+  background-color: #6c757d;
+  padding: 8px 20px;
+  font-size: 1em;
+}
+
+.modal-close-btn:hover {
+  background-color: #5a6268;
 }
 
 .modal-content h3 {

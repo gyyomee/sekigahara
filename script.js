@@ -1,31 +1,60 @@
-// 서군 (이시다) 문양 데이터
-const ISHIDA_CREST_ICONS = {
-  1: "images/ishida_1.png", // 코바야카와
-  2: "images/ishida_2.png",
-  3: "images/ishida_3.png",
-  4: "images/ishida_4.png",
-};
-const ISHIDA_CREST_NAMES = {
-  1: "코바야카와",
-  2: "모리",
-  3: "우에스기",
-  4: "우키타",
+/**
+ * =================================
+ * CONSTANTS & CONFIG
+ * =================================
+ */
+const FACTIONS = {
+  ISHIDA: "ishida",
+  TOKUGAWA: "tokugawa",
 };
 
-// 동군 (도쿠가와) 문양 데이터 (임시)
-const TOKUGAWA_CREST_ICONS = {
-  1: "images/tokugawa_1.png",
-  2: "images/tokugawa_2.png",
-  3: "images/tokugawa_3.png",
-  4: "images/tokugawa_4.png",
-};
-const TOKUGAWA_CREST_NAMES = {
-  1: "마에다",
-  2: "다테",
-  3: "후쿠시마",
-  4: "도쿠가와",
+const BLOCK_TYPES = {
+  MUSKET: "조총",
+  CAVALRY: "기마",
 };
 
+const FACTION_DATA = {
+  [FACTIONS.ISHIDA]: {
+    name: "서군",
+    crestIcons: {
+      1: "images/ishida_1.png",
+      2: "images/ishida_2.png",
+      3: "images/ishida_3.png",
+      4: "images/ishida_4.png",
+      5: "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cpath d='M20 20 L80 80 M80 20 L20 80' stroke='currentColor' stroke-width='15' fill='none'/%3e%3c/svg%3e",
+    },
+    crestNames: {
+      1: "코바야카와",
+      2: "모리",
+      3: "우에스기",
+      4: "우키타",
+      5: "배신자",
+    },
+  },
+  [FACTIONS.TOKUGAWA]: {
+    name: "동군",
+    crestIcons: {
+      1: "images/tokugawa_1.png",
+      2: "images/tokugawa_2.png",
+      3: "images/tokugawa_3.png",
+      4: "images/tokugawa_4.png",
+      5: "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3e%3cpath d='M20 20 L80 80 M80 20 L20 80' stroke='currentColor' stroke-width='15' fill='none'/%3e%3c/svg%3e",
+    },
+    crestNames: {
+      1: "마에다",
+      2: "다테",
+      3: "후쿠시마",
+      4: "도쿠가와",
+      5: "배신자",
+    },
+  },
+};
+
+/**
+ * =================================
+ * DOM ELEMENTS
+ * =================================
+ */
 const modal = document.getElementById("block-modal");
 const modalTitle = document.getElementById("modal-title");
 const crestSelector = document.getElementById("crest-selector");
@@ -33,21 +62,17 @@ const blockTypeSelector = document.getElementById("block-type-selector");
 let currentFaction = "";
 
 // 블록 선택 모달 열기
-function openBlockModal(faction) {
+function openBlockModal(faction = FACTIONS.ISHIDA) {
   currentFaction = faction;
-  modalTitle.textContent = `${
-    faction === "ishida" ? "서군" : "동군"
-  } 블록 선택`;
+  const data = FACTION_DATA[faction];
+  modalTitle.textContent = `${data.name} 블록 선택`;
 
   // 진영에 맞는 문양 데이터 선택
-  const crestIcons =
-    faction === "ishida" ? ISHIDA_CREST_ICONS : TOKUGAWA_CREST_ICONS;
-  const crestNames =
-    faction === "ishida" ? ISHIDA_CREST_NAMES : TOKUGAWA_CREST_NAMES;
+  const { crestIcons, crestNames } = data;
 
   // 문양 선택 버튼 생성
   crestSelector.innerHTML = "";
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const btn = document.createElement("button");
     btn.className = "crest-btn";
     btn.innerHTML = `
@@ -60,8 +85,22 @@ function openBlockModal(faction) {
 
   // 블록 종류 선택 버튼 생성
   blockTypeSelector.innerHTML = "";
-  const blockTypes = ["1개", "2개", "3개", "4개", "1+조총", "1+기마"];
-  const blockTypeValues = ["1", "2", "3", "4", "조총", "기마"];
+  const blockTypes = [
+    "1",
+    "2",
+    "3",
+    "4",
+    `1+${BLOCK_TYPES.MUSKET}`,
+    `1+${BLOCK_TYPES.CAVALRY}`,
+  ];
+  const blockTypeValues = [
+    "1",
+    "2",
+    "3",
+    "4",
+    BLOCK_TYPES.MUSKET,
+    BLOCK_TYPES.CAVALRY,
+  ];
   blockTypes.forEach((type, index) => {
     const btn = document.createElement("button");
     btn.className = "block-type-btn";
@@ -98,10 +137,7 @@ function createBlock(blockType) {
   // 모든 블록은 생성 시 바로 'supported' 상태가 됨
   block.className = `battle-block ${currentFaction}-block supported`;
 
-  const crestIcon =
-    currentFaction === "ishida"
-      ? ISHIDA_CREST_ICONS[selectedCrest]
-      : TOKUGAWA_CREST_ICONS[selectedCrest];
+  const crestIcon = FACTION_DATA[currentFaction].crestIcons[selectedCrest];
 
   block.innerHTML = `
     <div class="block-info">
@@ -115,8 +151,8 @@ function createBlock(blockType) {
   block.dataset.blockType = blockType;
   block.dataset.crest = selectedCrest;
 
-  // '조총' 또는 '기마' 블록일 경우에만 좌클릭으로 특수 효과 토글
-  if (blockType === "조총" || blockType === "기마") {
+  // 특수 블록일 경우에만 좌클릭으로 특수 효과 토글
+  if (blockType === BLOCK_TYPES.MUSKET || blockType === BLOCK_TYPES.CAVALRY) {
     block.addEventListener("click", () => {
       block.classList.toggle("effect-active");
       updateAllBlockDisplays(); // 변경 시 전체 업데이트
@@ -147,6 +183,7 @@ function closeModal() {
   modal.dataset.selectedCrest = "";
 }
 
+// 모달 창 바깥의 어두운 영역(오버레이)을 클릭하면 모달을 닫습니다.
 // 모달 외부 클릭 시 닫기
 window.onclick = function (event) {
   if (event.target == modal) {
@@ -155,7 +192,7 @@ window.onclick = function (event) {
 };
 
 // 페이지 로드 시 한 번 실행하여 결과창을 미리 표시
-document.addEventListener("DOMContentLoaded", () => calculateCombat());
+document.addEventListener("DOMContentLoaded", updateFinalResult);
 
 // 전투 초기화 함수
 function resetBattle() {
@@ -170,108 +207,106 @@ function resetBattle() {
 
 // 모든 블록의 전투력 표시를 업데이트하는 함수
 function updateAllBlockDisplays() {
-  const factions = ["ishida", "tokugawa"];
-  factions.forEach((faction) => {
+  [FACTIONS.ISHIDA, FACTIONS.TOKUGAWA].forEach((faction) => {
     const containerId = `#${faction}-block-container`;
     const blocks = document.querySelectorAll(`${containerId} .battle-block`);
 
-    // 각 블록의 점수를 개별적으로 계산하고 표시 업데이트
     blocks.forEach((block, index) => {
-      let strength = 0;
-      const blockType = block.dataset.blockType;
-      const crest = block.dataset.crest;
-
-      // --- 보너스 계산을 위해 '이전' 블록들의 정보만 수집 ---
       const prevBlocks = Array.from(blocks).slice(0, index);
-      const prevCrestCounts = {};
-      const prevSpecialAttackCounts = { 조총: 0, 기마: 0 };
-      prevBlocks.forEach((prevBlock) => {
-        prevCrestCounts[prevBlock.dataset.crest] =
-          (prevCrestCounts[prevBlock.dataset.crest] || 0) + 1;
-        if (prevBlock.classList.contains("effect-active")) {
-          prevSpecialAttackCounts[prevBlock.dataset.blockType]++;
-        }
-      });
-      // --- ----------------------------------------- ---
-
-      // 1. 기본 점수 계산
-      if (blockType === "1" || blockType === "조총" || blockType === "기마")
-        strength += 1;
-      else if (blockType === "2") strength += 2;
-      else if (blockType === "3") strength += 3;
-      else if (blockType === "4") strength += 4;
-
-      // 2. 특수 공격 보너스
-      if (block.classList.contains("effect-active")) {
-        strength += 2;
-      }
-
-      // 3. 동일 병종 보너스
-      // 이전에 활성화된 동일 병종 블록이 1개 이상 있을 경우
-      const prevActiveSameTypeCount = prevSpecialAttackCounts[blockType] || 0;
-      if (
-        block.classList.contains("effect-active") &&
-        prevActiveSameTypeCount > 0
-      ) {
-        // 이전에 활성화된 동일 병종 블록의 '개수' * 2 만큼 보너스
-        strength += prevActiveSameTypeCount * 2;
-      }
-
-      // 4. 문양 보너스
-      // 이전에 동일한 문양 블록이 있었던 개수만큼 보너스
-      const prevSameCrestCount = prevCrestCounts[crest] || 0;
-      if (prevSameCrestCount > 0) {
-        strength += prevSameCrestCount;
-      }
-
-      block.querySelector(".block-strength").textContent = strength;
+      updateBlockStrength(block, prevBlocks);
     });
   });
 
   // 개별 블록의 전투력이 업데이트된 후, 최종 전투 결과를 다시 계산
-  calculateCombat();
+  updateFinalResult();
 }
 
-// 전투력 계산 함수
-function calculateFactionStrength(faction) {
-  let totalStrength = 0;
-  const containerId = `#${faction}-block-container`;
-  const blocks = document.querySelectorAll(`${containerId} .battle-block`);
+/**
+ * 개별 블록의 전투력을 계산하고 DOM에 업데이트합니다.
+ * @param {HTMLElement} block - 전투력을 계산할 블록 요소
+ * @param {Array<HTMLElement>} prevBlocks - 해당 블록 이전에 추가된 블록들의 배열
+ */
+function updateBlockStrength(block, prevBlocks) {
+  let strength = 0;
+  const blockType = block.dataset.blockType;
+  const crest = block.dataset.crest;
 
-  const crestCounts = {}; // 문양 보너스 계산용
-  const specialAttackCounts = { 조총: 0, 기마: 0 }; // 동일 병종 보너스 계산용
+  // --- 보너스 계산을 위해 '이전' 블록들의 정보만 수집 ---
+  const prevCrestCounts = {};
+  const prevSpecialAttackCounts = {
+    [BLOCK_TYPES.MUSKET]: 0,
+    [BLOCK_TYPES.CAVALRY]: 0,
+  };
+  prevBlocks.forEach((prevBlock) => {
+    // 배신자 블록(crest 5)이 아니면 문양 카운트
+    if (prevBlock.dataset.crest !== "5") {
+      prevCrestCounts[prevBlock.dataset.crest] =
+        (prevCrestCounts[prevBlock.dataset.crest] || 0) + 1;
+    }
 
-  blocks.forEach((block) => {
-    // 이미 updateAllBlockDisplays에서 계산된 개별 블록의 점수를 가져와 합산
-    totalStrength +=
-      parseInt(block.querySelector(".block-strength").textContent) || 0;
+    const prevBlockType = prevBlock.dataset.blockType;
+    // 이전 블록의 활성화 여부와 상관없이 동일 병종(조총, 기마) 카운트
+    if (
+      prevBlockType === BLOCK_TYPES.MUSKET ||
+      prevBlockType === BLOCK_TYPES.CAVALRY
+    ) {
+      prevSpecialAttackCounts[prevBlockType]++;
+    }
   });
+  // --- ----------------------------------------- ---
 
-  return totalStrength;
+  // 1. 기본 점수 계산
+  if (
+    blockType === "1" ||
+    blockType === BLOCK_TYPES.MUSKET ||
+    blockType === BLOCK_TYPES.CAVALRY
+  )
+    strength += 1;
+  else if (blockType === "2") strength += 2;
+  else if (blockType === "3") strength += 3;
+  else if (blockType === "4") strength += 4;
+
+  // 2. 특수 공격 활성화 보너스
+  if (block.classList.contains("effect-active")) {
+    strength += 2;
+  }
+
+  // 3. 동일 병종 보너스
+  const prevSameSpecialCount = prevSpecialAttackCounts[blockType] || 0;
+  if (block.classList.contains("effect-active") && prevSameSpecialCount > 0) {
+    strength += prevSameSpecialCount * 2;
+  }
+
+  // 4. 문양 보너스
+  const prevSameCrestCount = prevCrestCounts[crest] || 0;
+  if (crest !== "5" && prevSameCrestCount > 0) {
+    strength += prevSameCrestCount;
+  }
+
+  block.querySelector(".block-strength").textContent = strength;
 }
 
-function calculateCombat() {
-  const ishidaStrength = calculateFactionStrength("ishida");
-  const tokugawaStrength = calculateFactionStrength("tokugawa");
+/**
+ * 각 진영의 최종 전투력을 합산하고 결과를 화면에 업데이트합니다.
+ */
+function updateFinalResult() {
+  const ishidaStrength = sumStrengthFor(FACTIONS.ISHIDA);
+  const tokugawaStrength = sumStrengthFor(FACTIONS.TOKUGAWA);
 
   let winner = "";
-
   if (ishidaStrength > tokugawaStrength) {
     winner = "이시다 미츠나리";
   } else if (tokugawaStrength > ishidaStrength) {
     winner = "도쿠가와 이에야스";
   } else {
-    winner = "무승부";
+    winner = "무승부"; // 게임 규칙에 따라 '공격자 패배' 등으로 변경 가능
   }
 
   const resultMessage = `서군 ${ishidaStrength} vs 동군 ${tokugawaStrength}`;
-
-  const resultArea = document.getElementById("resultArea");
   const resultText = document.getElementById("resultText");
   const winnerText = document.getElementById("winnerText");
 
   resultText.textContent = resultMessage;
-
   winnerText.className = "winnerText"; // 클래스 초기화
   if (winner === "무승부") {
     winnerText.textContent = winner;
@@ -282,6 +317,21 @@ function calculateCombat() {
     winnerText.textContent = `승자: ${winner}`;
     winnerText.classList.add("tokugawa-win");
   }
+}
 
-  resultArea.style.display = "block"; // 결과 영역을 보이게 함
+/**
+ * 특정 진영의 모든 블록 전투력을 합산하여 반환합니다.
+ * @param {string} faction - 진영 이름 (e.g., 'ishida')
+ * @returns {number} - 해당 진영의 총 전투력
+ */
+function sumStrengthFor(faction) {
+  const blocks = document.querySelectorAll(
+    `#${faction}-block-container .battle-block`
+  );
+  return Array.from(blocks).reduce((total, block) => {
+    return (
+      total +
+      (parseInt(block.querySelector(".block-strength").textContent) || 0)
+    );
+  }, 0);
 }
